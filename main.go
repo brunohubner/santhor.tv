@@ -17,7 +17,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	port := os.Getenv("SERVER_PORT")
+	port := os.Getenv("PORT")
 	apiKey := os.Getenv("YOUTUBE_API_KEY")
 	channelID := os.Getenv("YOUTUBE_CHANNEL_ID")
 
