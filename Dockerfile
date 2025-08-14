@@ -1,7 +1,7 @@
 FROM golang:1.25-alpine AS builder
 WORKDIR /app
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags="-w -s" -o /webserver .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags="-w -s" -o /app/bin/webserver .
 RUN apk --no-cache add ca-certificates tzdata
 
 FROM busybox:latest
