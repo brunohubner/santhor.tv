@@ -6,4 +6,5 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o ./bin/webserver .
 FROM busybox:latest
 WORKDIR /app
 COPY --from=builder /app/bin/webserver .
-CMD ["./webserver"]
+EXPOSE ${PORT}
+ENTRYPOINT ["./webserver"]
