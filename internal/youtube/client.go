@@ -16,9 +16,15 @@ type searchResponse struct {
 	} `json:"items"`
 }
 
+type CachedVideoURL struct {
+	videoURL   string
+	expiration time.Time
+}
+
 type Client struct {
-	apiKey     string
-	httpClient *http.Client
+	apiKey         string
+	httpClient     *http.Client
+	cachedVideoURL *CachedVideoURL
 }
 
 func NewClient(apiKey string) *Client {
@@ -27,12 +33,18 @@ func NewClient(apiKey string) *Client {
 		httpClient: &http.Client{
 			Timeout: 10 * time.Second,
 		},
+		cachedVideoURL: nil,
 	}
 }
 
 func (c *Client) GetLatestVideoURL(ctx context.Context, channelID string) (string, error) {
+	if c.cachedVideoURL != nil && time.Now().Before(c.cachedVideoURL.expiration) {
+		fmt.Printf("Usando URL em cache: %s", c.cachedVideoURL.videoURL)
+		return c.cachedVideoURL.videoURL, nil
+	}
+
 	apiURL := fmt.Sprintf(
-		"https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=%s&order=date&type=video&maxResults=1&key=%s",
+		"https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=%s&order=date&maxResults=1&key=%s",
 		channelID,
 		c.apiKey,
 	)
@@ -63,6 +75,12 @@ func (c *Client) GetLatestVideoURL(ctx context.Context, channelID string) (strin
 
 	videoID := responsePayload.Items[0].ID.VideoID
 	videoURL := fmt.Sprintf("https://www.youtube.com/watch?v=%s", videoID)
+
+	cachedVideoURL := &CachedVideoURL{
+		expiration: time.Now().Add(5 * time.Second), // Cache por 5 minutos
+		videoURL:   videoURL,
+	}
+	c.cachedVideoURL = cachedVideoURL
 
 	return videoURL, nil
 }
