@@ -30,7 +30,5 @@ func (h *RedirectHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Printf("Redirecionando para: %s", videoURL)
-
 	http.Redirect(w, r, videoURL, http.StatusTemporaryRedirect)
 }

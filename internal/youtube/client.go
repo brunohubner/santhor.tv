@@ -39,7 +39,6 @@ func NewClient(apiKey string) *Client {
 
 func (c *Client) GetLatestVideoURL(ctx context.Context, channelID string) (string, error) {
 	if c.cachedVideoURL != nil && time.Now().Before(c.cachedVideoURL.expiration) {
-		fmt.Printf("Usando URL em cache: %s", c.cachedVideoURL.videoURL)
 		return c.cachedVideoURL.videoURL, nil
 	}
 
@@ -77,7 +76,7 @@ func (c *Client) GetLatestVideoURL(ctx context.Context, channelID string) (strin
 	videoURL := fmt.Sprintf("https://www.youtube.com/watch?v=%s", videoID)
 
 	cachedVideoURL := &CachedVideoURL{
-		expiration: time.Now().Add(5 * time.Second), // Cache por 5 minutos
+		expiration: time.Now().Add(time.Minute),
 		videoURL:   videoURL,
 	}
 	c.cachedVideoURL = cachedVideoURL

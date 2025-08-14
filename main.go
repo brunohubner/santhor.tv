@@ -10,16 +10,26 @@ import (
 	"santhor.tv/internal/youtube"
 )
 
-func main() {
-	var err error
-
-	if err = godotenv.Load(); err != nil {
-		log.Fatal(err)
+func loadEnv() {
+	if err := godotenv.Load(); err != nil {
+		log.Printf("ERRO: Falha ao carregar o arquivo .env: %v", err)
 	}
+}
 
-	port := os.Getenv("PORT")
-	apiKey := os.Getenv("YOUTUBE_API_KEY")
-	channelID := os.Getenv("YOUTUBE_CHANNEL_ID")
+func getEnv(key string, fallback string) string {
+	value := os.Getenv(key)
+	if value == "" {
+		return fallback
+	}
+	return value
+}
+
+func main() {
+	loadEnv()
+
+	port := getEnv("PORT", "8080")
+	apiKey := getEnv("YOUTUBE_API_KEY", "")
+	channelID := getEnv("YOUTUBE_CHANNEL_ID", "")
 
 	if apiKey == "" || channelID == "" || port == "" {
 		log.Fatal("As variáveis de ambiente 'YOUTUBE_API_KEY', 'YOUTUBE_CHANNEL_ID' e 'SERVER_PORT' são obrigatórias.")
