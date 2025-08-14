@@ -50,26 +50,26 @@ func (c *Client) GetLatestVideoURL(ctx context.Context, channelID string) (strin
 
 	req, err := http.NewRequestWithContext(ctx, "GET", apiURL, nil)
 	if err != nil {
-		return "", fmt.Errorf("falha ao criar requisição para a API do YouTube: %w", err)
+		return "", fmt.Errorf("ERRO: Falha ao criar requisição para a API do YouTube: %w", err)
 	}
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		return "", fmt.Errorf("falha ao chamar a API do YouTube: %w", err)
+		return "", fmt.Errorf("ERRO: Falha ao chamar a API do YouTube: %w", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("API do YouTube retornou status inesperado: %s", resp.Status)
+		return "", fmt.Errorf("ERRO: API do YouTube retornou status inesperado: %s", resp.Status)
 	}
 
 	var responsePayload searchResponse
 	if err := json.NewDecoder(resp.Body).Decode(&responsePayload); err != nil {
-		return "", fmt.Errorf("falha ao decodificar resposta do YouTube: %w", err)
+		return "", fmt.Errorf("ERRO: Falha ao decodificar resposta do YouTube: %w", err)
 	}
 
 	if len(responsePayload.Items) == 0 {
-		return "", fmt.Errorf("nenhum vídeo encontrado para o canal %s", channelID)
+		return "", fmt.Errorf("ERRO: Nenhum vídeo encontrado para o canal %s", channelID)
 	}
 
 	videoID := responsePayload.Items[0].ID.VideoID

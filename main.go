@@ -32,7 +32,7 @@ func main() {
 	channelID := getEnv("YOUTUBE_CHANNEL_ID", "")
 
 	if apiKey == "" || channelID == "" || port == "" {
-		log.Fatal("As variáveis de ambiente 'YOUTUBE_API_KEY', 'YOUTUBE_CHANNEL_ID' e 'SERVER_PORT' são obrigatórias.")
+		log.Fatal("ERRO: As variáveis de ambiente 'YOUTUBE_API_KEY', 'YOUTUBE_CHANNEL_ID' e 'SERVER_PORT' são obrigatórias.")
 	}
 
 	ytClient := youtube.NewClient(apiKey)
@@ -49,6 +49,6 @@ func main() {
 	log.Printf("Servidor iniciado em http://localhost:%s \nPronto para redirecionar https://santhor.tv", port)
 
 	if err := server.ListenAndServe(); err != nil {
-		log.Fatalf("Falha ao iniciar o servidor: %v", err)
+		log.Fatalf("ERRO: Falha ao iniciar o servidor: %v", err)
 	}
 }
